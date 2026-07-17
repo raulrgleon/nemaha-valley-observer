@@ -1,0 +1,24 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nvo
+      POSTGRES_PASSWORD: nvo
+      POSTGRES_DB: nvo_newspaper
+    ports:
+      - "5433:5432"
+    volumes:
+      - nvo_pg:/var/lib/postgresql/data
+  web:
+    build: .
+    ports:
+      - "3004:3000"
+    environment:
+      DATABASE_URL: postgresql://nvo:nvo@db:5432/nvo_newspaper?schema=public
+      AUTH_SECRET: local-dev-secret-change-me
+      NEXT_PUBLIC_SITE_URL: http://localhost:3004
+    depends_on:
+      - db
+
+volumes:
+  nvo_pg:
